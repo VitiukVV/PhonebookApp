@@ -1,34 +1,71 @@
-import { useEffect } from 'react';
+import { ThemeProvider } from '@mui/material';
+import { lazy, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts } from 'redux/operations';
-import { selectContacts, selectError, selectIsLoading } from 'redux/selectors';
-import { Container } from './app.style';
-import { ContactList } from './contact-list/ContactList';
-import Filter from './filter/Filter';
-import ContactForm from './form/ContactForm';
+import { Route, Routes } from 'react-router-dom';
+import { fetchCurrentUser } from 'redux/auth/auth-operations.js';
+import authSelectors from 'redux/auth/auth-selectors.js';
+import theme from 'theme/theme.js';
+import PrivateRoute from './PrivateRoute.jsx';
+import PublicRoute from './PublicRoute.jsx';
+import CustomAppBar from './appBar/AppBar.jsx';
+
+const Login = lazy(() => import('../components/pages/Login/Login.jsx'));
+const Register = lazy(() =>
+  import('../components/pages/Registration/Register.jsx')
+);
+const Home = lazy(() => import('../components/pages/Home/Home.jsx'));
+const Contacts = lazy(() =>
+  import('../components/pages/Contacts/Contacts.jsx')
+);
 
 export const App = () => {
-  const contacts = useSelector(selectContacts);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
   const dispatch = useDispatch();
+  const isFetchingCurrentUser = useSelector(
+    authSelectors.getFetchingCurrentUser
+  );
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(fetchCurrentUser());
   }, [dispatch]);
 
   return (
-    <Container>
-      <h1>Phonebook</h1>
-      <ContactForm></ContactForm>
-      {isLoading && !error && <b>Request in progress...</b>}
-      {contacts.length > 0 && (
-        <>
-          <h2>Contacts</h2>
-          <Filter />
-          <ContactList />
-        </>
-      )}
-    </Container>
+    <>
+      <ThemeProvider theme={theme}>
+        <Toaster />
+        {!isFetchingCurrentUser && (
+          <Routes>
+            <Route path="/" element={<CustomAppBar />}>
+              <Route index element={<Home />} />
+              <Route
+                path="register"
+                element={
+                  <PublicRoute redirectTo="/contacts">
+                    <Register />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="login"
+                element={
+                  <PublicRoute redirectTo="/contacts">
+                    <Login />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="contacts"
+                element={
+                  <PrivateRoute>
+                    <Contacts />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<Home />} />
+            </Route>
+          </Routes>
+        )}
+      </ThemeProvider>
+    </>
   );
 };
