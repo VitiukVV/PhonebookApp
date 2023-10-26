@@ -31,7 +31,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
         <TextField
           margin="normal"
           required
@@ -39,8 +39,7 @@ const LoginForm = () => {
           id="email"
           label="Email Address"
           name="email"
-          type="email"
-          autoComplete="email"
+          type="text"
           autoFocus
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />

@@ -28,7 +28,7 @@ const ContactForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
       <TextField
         fullWidth
         margin="normal"

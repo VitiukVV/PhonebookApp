@@ -1,6 +1,7 @@
 import { Box, TextField } from '@mui/material';
 import PasswordInput from 'components/helpers/PasswordInput';
 import StyledButton from 'components/helpers/StyledButton';
+import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { register } from 'redux/auth/auth-operations';
@@ -8,23 +9,36 @@ import { register } from 'redux/auth/auth-operations';
 const RegisterForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     const form = e.target;
     const name = form.elements.name.value;
     const email = form.elements.email.value;
     const password = form.elements.password.value;
-    dispatch(register({ name, email, password }));
-    form.reset();
+    try {
+      await dispatch(register({ name, email, password })).unwrap();
+      toast.success('Your registration was successful!', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      form.reset();
+    } catch (error) {
+      toast.error(
+        'Something is wrong. Try entering a different email or password.',
+        {
+          duration: 3000,
+          position: 'top-center',
+        }
+      );
+    }
   };
 
   return (
     <>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
         <TextField
           fullWidth
           margin="normal"
-          id="email"
           label="Name"
           variant="outlined"
           type="text"
@@ -38,10 +52,9 @@ const RegisterForm = () => {
           margin="normal"
           required
           fullWidth
-          id="email"
           label="Email Address"
           name="email"
-          type="email"
+          type="text"
           autoComplete="email"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />
