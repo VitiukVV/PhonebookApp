@@ -1,4 +1,5 @@
 import { AppBar, Toolbar } from '@mui/material';
+import Fallback from 'components/helpers/Fallback';
 import { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
@@ -18,7 +19,7 @@ const CustomAppBar = () => {
           {isLoggedIn ? <UserMenu /> : <AuthNav />}
         </Toolbar>
       </AppBar>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Fallback />}>
         <Outlet />
       </Suspense>
     </>
