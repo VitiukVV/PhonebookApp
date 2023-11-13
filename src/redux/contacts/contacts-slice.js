@@ -3,6 +3,7 @@ import {
   addContact,
   deleteContact,
   fetchContacts,
+  patchContact,
 } from './contacts-operations';
 
 const pending = state => {
@@ -39,6 +40,13 @@ export const contactsSlice = createSlice({
         state.items = state.items.filter(
           contact => contact.id !== action.payload.id
         );
+      })
+      .addCase(patchContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // state.items = state.items.filter(
+        //   contact => contact.id !== action.payload.id
+        // );
       })
       .addMatcher(action => action.type.endsWith('/pending'), pending)
       .addMatcher(action => action.type.endsWith('/rejected'), rejected);

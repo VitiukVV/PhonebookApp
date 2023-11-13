@@ -1,5 +1,6 @@
 import { Box, TextField } from '@mui/material';
 import StyledButton from 'components/helpers/StyledButton';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contacts/contacts-operations';
 import { selectContacts } from 'redux/contacts/contacts-selectors';
@@ -21,7 +22,7 @@ const ContactForm = () => {
       contact => contact.name.toLowerCase() === normalizeName
     );
     if (usedName) {
-      return alert(`${name} is already in contacts!`);
+      return toast.error(`${name} is already in contacts!`);
     }
     dispatch(addContact({ name, number }));
     form.reset();
